@@ -70,7 +70,7 @@ mod tests {
 
     use crate::{
         calculus::numeric_diff::VectorField,
-        image::{interpolation::interpolate, layout::ImageSize},
+        image::{layout::ImageSize, interpolation::{InterpolationTrait, FieldViewTrait}},
     };
 
     use super::{DynCamera, V};
@@ -99,6 +99,7 @@ mod tests {
             ];
 
             let table = camera.undistort_table();
+            let field = table.as_bilinear_field_view();
 
             for pixel in pixels_in_image {
                 for d in [1.0, 0.1, 0.5, 1.1, 3.0, 15.0] {
@@ -109,7 +110,7 @@ mod tests {
                     assert_relative_eq!(pixel_in_image2, pixel, epsilon = 1e-6);
                 }
                 let ab_in_z1plane = camera.undistort(&pixel);
-                let ab_in_z1plane2_f32 = interpolate(&table, pixel.cast());
+                let ab_in_z1plane2_f32 = field.interp(pixel.cast());
                 let ab_in_z1plane2 = ab_in_z1plane2_f32.cast();
                 assert_relative_eq!(ab_in_z1plane, ab_in_z1plane2, epsilon = 0.000001);
 
