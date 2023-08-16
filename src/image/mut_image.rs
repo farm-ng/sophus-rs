@@ -340,4 +340,57 @@ mod tests {
         );
     }
 
+    #[test]
+    pub fn in_bounds() {
+        let size_2_x_3 = ImageSize::from_width_and_height(2, 3);
+        let img_f32 = MutImage::<1, f32>::with_size_and_val(size_2_x_3, P1F32::zero());
+
+        // shouldn't panic
+        for x in 0..2 {
+            for y in 0..3 {
+                println!("x: {}, y: {}", x, y);
+                img_f32.pixel(x, y);
+            }
+        }
+    }
+
+    #[test]
+    pub fn out_of_bounds_y() {
+        let size_2_x_3 = ImageSize::from_width_and_height(2, 3);
+        let img_f32 = MutImage::<1, f32>::with_size_and_val(size_2_x_3, P1F32::zero());
+
+        println!("Expecting panics, these are good!");
+
+        for x in 0..2 {
+            assert!(
+                std::panic::catch_unwind(|| {
+                    img_f32.pixel(x, 3);
+                })
+                .is_err(),
+                ".pixel({},{}) should have panicked",
+                x,
+                3
+            );
+        }
+    }
+
+    #[test]
+    pub fn out_of_bounds_x() {
+        let size_2_x_3 = ImageSize::from_width_and_height(2, 3);
+        let img_f32 = MutImage::<1, f32>::with_size_and_val(size_2_x_3, P1F32::zero());
+
+        println!("Expecting panics, these are good!");
+
+        for y in 0..3 {
+            assert!(
+                std::panic::catch_unwind(|| {
+                    img_f32.pixel(2, y);
+                })
+                .is_err(),
+                ".pixel({},{}) should have panicked",
+                2,
+                3
+            );
+        }
+    }
 }
