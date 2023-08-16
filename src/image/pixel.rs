@@ -1,5 +1,6 @@
 use std::ops::{Index, IndexMut};
 
+use nalgebra::RealField;
 use num_traits::NumCast;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -30,7 +31,15 @@ impl ScalarTrait for u16 {
     const NUMBER_CATEGORY: NumberCategory = NumberCategory::Unsigned;
 }
 
+impl ScalarTrait for u32 {
+    const NUMBER_CATEGORY: NumberCategory = NumberCategory::Unsigned;
+}
+
 impl ScalarTrait for f32 {
+    const NUMBER_CATEGORY: NumberCategory = NumberCategory::Real;
+}
+
+impl ScalarTrait for f64 {
     const NUMBER_CATEGORY: NumberCategory = NumberCategory::Real;
 }
 
@@ -44,10 +53,10 @@ pub trait PixelTrait<const CHANNELS: usize, Scalar: ScalarTrait + 'static>:
     + IndexMut<usize, Output = Scalar>
     + num_traits::Zero
 {
-    fn scale(&self, factor: f32) -> Self {
+    fn scale<T : RealField + NumCast + Copy>(&self, factor: T) -> Self {
         let mut result = *self;
         for i in 0..CHANNELS {
-            let v: f32 = NumCast::from(self[i]).unwrap();
+            let v: T = NumCast::from(self[i]).unwrap();
             result[i] = NumCast::from(v * factor).unwrap();
         }
         result
