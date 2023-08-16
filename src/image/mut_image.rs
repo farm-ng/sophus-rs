@@ -66,6 +66,22 @@ impl<'a, const NUM: usize, Scalar: ScalarTrait + 'static> MutImage<NUM, Scalar> 
         i
     }
 
+    pub fn with_size_from_function<F: Fn(usize, usize) -> P<NUM, Scalar>>(
+        size: ImageSize,
+        f: F,
+    ) -> Self {
+        let mut i = Self::with_size(size);
+
+        for y in 0..i.height() {
+            let row = i.mut_row_slice(y);
+            for x in 0..row.len() {
+                row[x] = f(x, y);
+            }
+        }
+
+        i
+    }
+
     pub fn make_from_transform<
         const NUM2: usize,
         Scalar2: ScalarTrait + 'static,
@@ -300,4 +316,28 @@ mod tests {
             MutImage::<3, f32>::with_size_and_val(size_2_x_3, op(P1F32::new(1.0))).slice()
         );
     }
+
+    #[test]
+    pub fn with_size_from_function() {
+        type P2 = P<2, u32>;
+
+        let size_2_x_3 = ImageSize::from_width_and_height(2, 3);
+        let op = |x, y| P2::new(x as u32, y as u32);
+
+        let pattern = MutImage::with_size_from_function(size_2_x_3, op);
+        let expected = [
+            P2::new(0, 0),
+            P2::new(1, 0),
+            P2::new(0, 1),
+            P2::new(1, 1),
+            P2::new(0, 2),
+            P2::new(1, 2)
+        ];
+
+        assert_eq!(
+            pattern.slice(),
+            expected.as_slice(),
+        );
+    }
+
 }
