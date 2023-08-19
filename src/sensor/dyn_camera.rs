@@ -70,7 +70,7 @@ mod tests {
 
     use crate::{
         calculus::numeric_diff::VectorField,
-        image::{layout::ImageSize, interpolation::{InterpolationTrait, FieldViewTrait}},
+        image::{layout::ImageSize, interpolation::{BilinearTrait, FieldViewTrait}},
     };
 
     use super::{DynCamera, V};
@@ -99,7 +99,7 @@ mod tests {
             ];
 
             let table = camera.undistort_table();
-            let field = table.as_bilinear_field_view();
+            let field = table.bilinear_view();
 
             for pixel in pixels_in_image {
                 for d in [1.0, 0.1, 0.5, 1.1, 3.0, 15.0] {
