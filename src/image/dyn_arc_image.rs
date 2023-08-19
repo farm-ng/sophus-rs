@@ -19,8 +19,8 @@ use crate::image::layout::ImageLayout;
 use crate::image::layout::ImageLayoutTrait;
 use crate::image::layout::ImageSize;
 use crate::image::layout::ImageSizeTrait;
-use crate::image::pixel::P1F32;
 
+#[derive(Debug, Clone)]
 pub struct AnyImage {
     pub buffer: Arc<DataChunkVec>,
     pub layout: ImageLayout,
