@@ -10,3 +10,4 @@ pub mod mut_image;
 pub mod mut_view;
 pub mod pixel;
 pub mod view;
+pub mod mut_tiled_view;
