@@ -45,7 +45,7 @@ pub struct ImageLayout {
 }
 
 impl ImageLayout {
-    pub fn from_width_and_height<T>(width: usize, height: usize) -> Self {
+    pub fn from_width_and_height(width: usize, height: usize) -> Self {
         ImageLayout {
             size: ImageSize { width, height },
             stride: width,
