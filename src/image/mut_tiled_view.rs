@@ -1,13 +1,13 @@
 use super::layout::ImageSizeTrait;
 use super::mut_view::MutImageView;
-use crate::image::pixel::{ScalarTrait, P};
+use crate::image::{pixel::{ScalarTrait, P}, layout::{ImageLayout, ImageSize}};
 
 pub struct TileView<'a, const N: usize, T: ScalarTrait + 'static> {
     // Some non-overlapping subview of the original image
-    view: MutImageView<'a, N, T>,
+    pub view: MutImageView<'a, N, T>,
 
     // the x,y coordinates of the tile in the original image
-    tile_origin: (usize, usize),
+    pub tile_origin: (usize, usize),
 }
 
 pub struct TiledImageView<'a, const N: usize, T: ScalarTrait + 'static> {
@@ -39,7 +39,13 @@ impl<'a, const N: usize, T: ScalarTrait> MutImageView<'a, N, T> {
                 tiles.push(TileView {
                     tile_origin: (x * tile_width, y * tile_height),
                     view: MutImageView {
-                        layout: self.layout,
+                        layout: ImageLayout{
+                            size : ImageSize {
+                                width: tile_width,
+                                height: tile_height,
+                            },
+                            stride: self.layout.stride,
+                        },
                         mut_slice: tile_slice,
                     },
                 });
