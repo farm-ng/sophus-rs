@@ -94,7 +94,6 @@ impl lie::traits::LieGroupImpl<3, 4, 3, 3> for Rotation3Impl {
     }
 
     fn log(params: &V<4>) -> V<3> {
-        println!("params: {:?}", params);
         const EPS: f64 = 1e-8;
         let ivec = V::<3>::new(params[0], params[1], params[2]);
 
