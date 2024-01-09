@@ -15,6 +15,7 @@ use super::lie_group::LieGroup;
 use super::traits::IsLieGroupImpl;
 use super::traits::IsTranslationProductGroup;
 
+// Internally params are wxyz quaternion (Hamilton convention, i.j.k=-1)
 #[derive(Debug, Copy, Clone)]
 pub struct Rotation3Impl<S: IsScalar> {
     phantom: PhantomData<S>,
@@ -319,6 +320,13 @@ impl<S: IsScalar> Isometry3<S> {
 
     pub fn rotation(&self) -> Rotation3<S> {
         self.factor()
+    }
+}
+
+impl<S: IsScalar> Rotation3<S> {
+    /// quaternion (Hamilton convention, i.j.k=-1)
+    pub fn quaternion_wijk(&self) -> &S::Vector<4> {
+        self.params()
     }
 }
 
