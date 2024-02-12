@@ -213,6 +213,11 @@ impl SceneRenderer {
             &self.buffers.bind_group,
             &self.buffers.dist_bind_group,
         );
+        self.line_renderer.depth_paint(
+            &mut render_pass,
+            &self.buffers.bind_group,
+            &self.buffers.dist_bind_group,
+        );
     }
 
     pub fn clear_vertex_data(&mut self) {

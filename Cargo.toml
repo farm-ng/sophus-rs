@@ -23,6 +23,7 @@ log = "0.4.14"
 nalgebra = {version="0.32", features = ["rand"]}
 ndarray = {version="0.15.4", features = ["approx-0_5"]}
 num-traits = "0.2.15"
+rand = "0.8.5"
 simba = "0.8.1"
 sprs = "0.11"
 sprs-ldl = "0.10"

@@ -42,17 +42,17 @@ impl MeshRenderer {
             ),
         });
 
-        let depth_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
-            label: Some("scene depth triangle shader"),
-            source: wgpu::ShaderSource::Wgsl(
-                format!(
-                    "{} {}",
-                    include_str!("./utils.wgsl"),
-                    include_str!("./depth_triangle_scene_shader.wgsl")
-                )
-                .into(),
-            ),
-        });
+        // let depth_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+        //     label: Some("scene depth triangle shader"),
+        //     source: wgpu::ShaderSource::Wgsl(
+        //         format!(
+        //             "{} {}",
+        //             include_str!("./utils.wgsl"),
+        //             include_str!("./depth_triangle_scene_shader.wgsl")
+        //         )
+        //         .into(),
+        //     ),
+        // });
 
         // hack: generate a buffer of 1000 points, because vertex buffer cannot be resized
         let mut vertex_data = vec![];
@@ -104,7 +104,7 @@ impl MeshRenderer {
             label: Some("depth_triangle scene pipeline"),
             layout: Some(pipeline_layout),
             vertex: wgpu::VertexState {
-                module: &depth_shader,
+                module: &shader,
                 entry_point: "vs_main",
                 buffers: &[wgpu::VertexBufferLayout {
                     array_stride: std::mem::size_of::<MeshVertex3>() as wgpu::BufferAddress, 
@@ -113,8 +113,8 @@ impl MeshRenderer {
                 }],
             },
             fragment: Some(wgpu::FragmentState {
-                module: &depth_shader,
-                entry_point: "fs_main",
+                module: &shader,
+                entry_point: "depth_fs_main",
                 targets: &[Some(wgpu::TextureFormat::R32Float.into())],
             }),
             primitive: wgpu::PrimitiveState::default(),
@@ -141,7 +141,7 @@ impl MeshRenderer {
     ) {
         render_pass.set_pipeline(&self.pipeline);
         render_pass.set_bind_group(0, bind_group, &[]);
-        render_pass.set_bind_group(1, dist_bind_group, &[]); // NEW!
+        render_pass.set_bind_group(1, dist_bind_group, &[]); 
         render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
         render_pass.draw(0..self.vertices.len() as u32, 0..1);
     }
@@ -154,7 +154,7 @@ impl MeshRenderer {
     ) {
         depth_render_pass.set_pipeline(&self.depth_pipeline);
         depth_render_pass.set_bind_group(0, bind_group, &[]);
-        depth_render_pass.set_bind_group(1, dist_bind_group, &[]); // NEW!
+        depth_render_pass.set_bind_group(1, dist_bind_group, &[]); 
         depth_render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
         depth_render_pass.draw(0..self.vertices.len() as u32, 0..1);
     }
